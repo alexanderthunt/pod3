@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: "planetarium"
-        image: "esuminski/p3planetarium:1"
+        image: "esuminski/p3planetarium:base"
         imagePullPolicy: "Always"
         ports:
         - containerPort: 8080
