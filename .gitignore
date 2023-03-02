@@ -43,4 +43,4 @@ application.properties
 *.tfvars
 *.log
 
-planetarium-deployment.yml
+manifests/planetarium-deployment.yml
