@@ -1,0 +1,234 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    prometheus: socks-shop
+    role: alert-rules
+    release: prometheus
+  name: prometheus-rules
+spec:
+  groups:
+  - name: ApplicationAlerts
+    rules:
+
+    - alert: AppDown
+      expr: up{job="planetarium"} == 0
+      for: 5m
+      labels:
+        severity: warn
+      annotations:
+        summary: "APPLICATION IS CURRENTLY DOWN"
+        description: "Planetarium is not running"
+
+    - alert: AppDownOvertime
+      expr: up{job="planetarium"} == 0
+      for: 30m
+      labels:
+        severity: critical
+      annotations:
+        summary: "APPLICATION IS CRITICALLY DOWN"
+        description: "Planetarium has been down for over 30 minutes"
+
+    - alert: APIHighLatency:5min
+      expr: sum(rate(http_server_requests_seconds_sum{job="planetarium"}[5m])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[5m])) > 0.2
+      labels:
+        severity: warn
+      annotations:
+        summary: "5-MINUTE LATENCY HIGHER THAN EXPECTED"
+        description: "Planetarium is taking too long to handle requests in the past 5 minutes"
+
+    - alert: APIHighLatency:15min
+      expr: sum(rate(http_server_requests_seconds_sum{job="planetarium"}[15m])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[15m])) > 0.2
+      labels:
+        severity: warn
+      annotations:
+        summary: "10-MINUTE LATENCY HIGHER THAN EXPECTED"
+        description: "Planetarium is taking too long to handle requests in the past 10 minutes"
+
+    - alert: APIHighLatency:30min
+      expr: sum(rate(http_server_requests_seconds_sum{job="planetarium"}[30m])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[30m])) > 0.2
+      labels:
+        severity: warn
+      annotations:
+        summary: "30-MINUTE LATENCY HIGHER THAN EXPECTED"
+        description: "Planetarium is taking too long to handle requests in the past 30 minutes"
+
+    - alert: APIHighLatency:1h
+      expr: sum(rate(http_server_requests_seconds_sum{job="planetarium"}[1h])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[1h])) > 0.2
+      labels:
+        severity: warn
+      annotations:
+        summary: "60-MINUTE LATENCY HIGHER THAN EXPECTED"
+        description: "Planetarium is taking too long to handle requests in the past 1 hour"
+
+    - alert: APILowSuccessRate:5m
+      expr: sum(rate(http_server_requests_seconds_count{job="planetarium", status!="500"}[5m])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[5m])) < 0.998
+      labels:
+        severity: warn
+      annotations:
+        summary: "5-MINUTE ERROR RATE HIGHER THAN EXPECTED"
+        description: "Planetarium is reporting too many 500 status codes in the past 5 minutes"
+
+    - alert: APILowSuccessRate:15m
+      expr: sum(rate(http_server_requests_seconds_count{job="planetarium", status!="500"}[15m])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[15m])) < 0.998
+      labels:
+        severity: warn
+      annotations:
+        summary: "15-MINUTE ERROR RATE HIGHER THAN EXPECTED"
+        description: "Planetarium is reporting too many 500 status codes in the past 15 minutes"
+
+    - alert: APILowSuccessRate:30m
+      expr: sum(rate(http_server_requests_seconds_count{job="planetarium", status!="500"}[30m])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[30m])) < 0.998
+      labels:
+        severity: warn
+      annotations:
+        summary: "30-MINUTE ERROR RATE HIGHER THAN EXPECTED"
+        description: "Planetarium is reporting too many 500 status codes in the past 30 minutes"
+
+    - alert: APILowSuccessRate:1h
+      expr: sum(rate(http_server_requests_seconds_count{job="planetarium", status!="500"}[1h])) / sum(rate(http_server_requests_seconds_count{job="planetarium"}[1h])) < 0.998
+      labels:
+        severity: warn
+      annotations:
+        summary: "60-MINUTE ERROR RATE HIGHER THAN EXPECTED"
+        description: "Planetarium is reporting too many 500 status codes in the past 1 hour"
+  
+  - name: ServiceMonitor
+    rules: 
+    - alert: HighMemoryUsage 
+      expr: node_memory_MemFree_bytes / node_memory_MemTotal_bytes > 0.8 
+      annotations: 
+        summary: "High memory usage on {{ $labels.instance }}" 
+        description: "{{ $labels.instance }} has a memory usage of {{ $value }}%" 
+      labels: 
+        severity: warning 
+
+    - alert: HighCPUUsage 
+      expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80 
+      annotations: 
+        summary: "High CPU usage on {{ $labels.instance }}" 
+        description: "{{ $labels.instance }} has a CPU usage of {{ $value }}%" 
+      labels: 
+        severity: warning 
+
+    - alert: LowFileSpace 
+      expr: node_filesystem_free_bytes / node_filesystem_size_bytes < 0.1 
+      annotations: 
+        summary: "Low file space on {{ $labels.instance }}" 
+
+    - alert: PodsResetting 
+      expr: increase(kube_pod_container_status_restarts_total[1h]) > 3 
+      annotations: 
+        summary: "Pods are resetting too often" 
+      labels: 
+        severity: warning
+
+# SLO: 99.9% success rate with avg latency of 100ms in 30 days
+# 30 day failure allowance: 0.72 hrs = 43.2 mins
+# Daily failure allowance: 1.44 mins
+# Burn Rate of 1 = 1.44 mins/day
+  - name: MultiWindowMultiBurnRate
+    rules:
+    - alert: FailureBurnRate(5min-1hr)
+      expr: sum(rate(http_server_requests_seconds_count{job="planetarium", status=~"5.."}[5m])) 
+            / 
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[5m]))
+            >
+            14.4 * 0.001
+            and
+            sum(rate(http_server_requests_seconds_count{job="planetarium", status=~"5.."}[1h])) 
+            / 
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[1h]))
+            >
+            14.4 * 0.001
+      annotations: 
+          summary: "Too many failures in both 5-minute range and 1-hour range. Error budget consumption > 2%" 
+      labels: 
+        severity: warning
+
+    - alert: LatencyBurnRate(5min-1hr)
+      expr: sum(rate(http_server_requests_seconds_sum{job="planetarium"}[5m])) 
+            /
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[5m])) 
+            >
+            14.4 * 0.001
+            and
+            sum(rate(http_server_requests_seconds_sum{job="planetarium"}[1h])) 
+            /
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[1h]))
+            >
+            14.4 * 0.001
+      annotations: 
+          summary: "Latency too long in both 5-minute range and 1-hour range. Error budget consumption > 2%" 
+      labels: 
+        severity: warning
+
+    - alert: FailureBurnRate(30min-6hr)
+      expr: sum(rate(http_server_requests_seconds_count{job="planetarium", status=~"5.."}[30m])) 
+            / 
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[30m]))
+            >
+            6 * 0.001
+            and
+            sum(rate(http_server_requests_seconds_count{job="planetarium", status=~"5.."}[6h])) 
+            / 
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[6h]))
+            >
+            6 * 0.001
+      annotations: 
+          summary: "Too many failures in both 30-minute range and 6-hour range. Error budget consumption > 5%" 
+      labels: 
+        severity: warning
+
+    - alert: LatencyBurnRate(30min-6hr)
+      expr: sum(rate(http_server_requests_seconds_sum{job="planetarium"}[30m])) 
+            /
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[30m])) 
+            >
+            6 * 0.001
+            and
+            sum(rate(http_server_requests_seconds_sum{job="planetarium"}[6h])) 
+            /
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[6h]))
+            >
+            6 * 0.001
+      annotations: 
+          summary: "Latency too long in both 5-minute range and 1-hour range. Error budget consumption > 2%" 
+      labels: 
+        severity: warning
+
+    - alert: FailureBurnRate(6hr-3d)
+      expr: sum(rate(http_server_requests_seconds_count{job="planetarium", status=~"5.."}[6h])) 
+            / 
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[6h]))
+            >
+            1 * 0.001
+            and
+            sum(rate(http_server_requests_seconds_count{job="planetarium", status=~"5.."}[3d])) 
+            / 
+            sum(rate(http_server_requests_seconds_count{job="planetarium"}[3d]))
+            >
+            1 * 0.001
+      annotations: 
+          summary: "Too many failures in both 30-minute range and 6-hour range. Error budget consumption > 10%" 
+      labels: 
+        severity: critical
+
+    # - alert: LatencyBurnRate(6hr-3d)
+    #   expr: sum(rate(http_server_requests_seconds_sum{job="planetarium"}[6h])) 
+    #         /
+    #         sum(rate(http_server_requests_seconds_count{job="planetarium"}[6h])) 
+    #         >
+    #         1 * 0.001
+    #         and
+    #         sum(rate(http_server_requests_seconds_sum{job="planetarium"}[3d])) 
+    #         /
+    #         sum(rate(http_server_requests_seconds_count{job="planetarium"}[3d]))
+    #         >
+    #         1 * 0.001
+    #   annotations: 
+    #       summary: "Latency too long in both 5-minute range and 1-hour range. Error budget consumption > 2%" 
+    #   labels: 
+    #     severity: critical
+
