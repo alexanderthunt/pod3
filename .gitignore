@@ -42,3 +42,5 @@ application.properties
 *.tfstate
 *.tfvars
 *.log
+
+planetarium-deployment.yml
