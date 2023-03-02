@@ -1,17 +1,164 @@
+prometheusOperator:
+  tolerations:
+    - key: "monitoring"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+kube-state-metrics:
+  tolerations:
+    - key: "monitoring"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
 prometheus:
+# DO NOT ADD TOLERATIONS HERE: WILL OVERRIDE PROMETHEUSSPEC TOLERATIONS CAUSING prometheus-prometheus-kube-prometheus-prometheus-0
+# POD IN PENDING STATUS FOREVER!!!
   prometheusSpec: 
-    serviceMonitorSelector:
+    tolerations:
+    - key: "monitoring"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    serviceAccountName: prometheus
+    serviceMonitorNamespaceSelector: {}
+    serviceMonitorSelector: 
       matchLabels:
-        app: planetarium
-
+          release: prometheus
+    podMonitorSelector: {}
+    # additionalScrapeConfigs:
+    #   name: additional-scrape-configs
+    #   key: prometheus-additional-job.yaml
+    resources:
+      requests:
+        memory: 400Mi
+    enableAdminAPI: false
+    alerting:
+      alertmanagers:
+      - namespace: default
+        name: alertmanager-operated
+        port: web
+    ruleSelector:
+      matchLabels:
+        role: alert-rules
+        prometheus: socks-shop
+      
 grafana:
-    namespaceOverride: "default"
-    grafana.ini:
-      server:
-        serve_from_sub_path: "true"
-        root_url: "%(protocol)s://%(domain)s:/grafana/" 
+  tolerations:
+    - key: "monitoring"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  # sidecar:
+  #   datasources:
+  #     tolerations:
+  #     - key: "monitoring"
+  #       operator: "Equal"
+  #       value: "true"
+  #       effect: "NoSchedule"
+  namespaceOverride: "default"
+  grafana.ini:
+    server:
+      serve_from_sub_path: "true"
+      root_url: "%(protocol)s://%(domain)s:/grafana/" 
 
-    ingress:
-      enabled: true
-      path: /grafana
-      ingressClassName: nginx
+  ingress:
+    enabled: true
+    path: /grafana
+    ingressClassName: nginx
+
+prometheus-node-exporter:
+  tolerations:
+    - key: "monitoring"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "application"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+alertmanager:
+  alertmanagerSpec:
+    tolerations:
+    - key: "monitoring"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+  config:
+    global:
+      resolve_timeout: 5m
+
+    route:
+      receiver: 'email'
+      group_by: ['alertname']
+      group_wait: 10m
+      group_interval: 10m
+      repeat_interval: 6h
+      receiver: 'email'
+
+      routes:
+      - match:
+          alertname: Watchdog
+        receiver: 'null'
+      - match:
+          alertname: AppDown
+        receiver: 'email'
+        continue: true
+
+    receivers:
+    - name: 'null'
+    - name: 'email'
+      email_configs:
+      - to: 'allan841@revature.net'
+        from: 'sreteamkuberknights@gmail.com'
+        smarthost: smtp.gmail.com:587
+        auth_username: 'sreteamkuberknights@gmail.com'
+        auth_identity: 'sreteamkuberknights@gmail.com'
+        auth_password: 'xowdtptpcxljxpxz'
+      - to: 'abraham126@revature.net'
+        from: 'sreteamkuberknights@gmail.com'
+        smarthost: smtp.gmail.com:587
+        auth_username: 'sreteamkuberknights@gmail.com'
+        auth_identity: 'sreteamkuberknights@gmail.com'
+        auth_password: 'xowdtptpcxljxpxz'
+      - to: 'gregory842@revature.net'
+        from: 'sreteamkuberknights@gmail.com'
+        smarthost: smtp.gmail.com:587
+        auth_username: 'sreteamkuberknights@gmail.com'
+        auth_identity: 'sreteamkuberknights@gmail.com'
+        auth_password: 'xowdtptpcxljxpxz'
+      - to: 'alexander056@revature.net'
+        from: 'sreteamkuberknights@gmail.com'
+        smarthost: smtp.gmail.com:587
+        auth_username: 'sreteamkuberknights@gmail.com'
+        auth_identity: 'sreteamkuberknights@gmail.com'
+        auth_password: 'xowdtptpcxljxpxz'
+
+
+
+
+# thanosRuler:
+#   thanosRulerSpec:
+#     tolerations:
+#     - key: "monitoring"
+#       operator: "Equal"
+#       value: "true"
+#       effect: "NoSchedule"
+
+# kubelet:
+#   tolerations:
+#     - key: "monitoring"
+#       operator: "Equal"
+#       value: "true"
+#       effect: "NoSchedule"
+
+# tolerations:
+#     - key: "monitoring"
+#       operator: "Equal"
+#       value: "true"
+#       effect: "NoSchedule"
+
+

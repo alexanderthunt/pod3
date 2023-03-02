@@ -203,7 +203,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\", status!=\"500\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetarium\", status!=\"500\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[5m]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -295,7 +295,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\", status!=\"500\"}[15m])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[15m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetarium\", status!=\"500\"}[15m])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[15m]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -387,7 +387,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\", status!=\"500\"}[30m])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[30m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetarium\", status!=\"500\"}[30m])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[30m]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -479,7 +479,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\", status!=\"500\"}[1h])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[1h]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"planetarium\", status!=\"500\"}[1h])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[1h]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -583,7 +583,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetariumbeta\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetarium\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[5m]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -674,7 +674,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetariumbeta\"}[15m])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[15m]))",
+          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetarium\"}[15m])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[15m]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -765,7 +765,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetariumbeta\"}[30m])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[30m]))",
+          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetarium\"}[30m])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[30m]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -856,7 +856,7 @@
             "uid": "ZWph8xtVz"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetariumbeta\"}[1h])) / sum(rate(http_server_requests_seconds_count{job=\"planetariumbeta\"}[1h]))",
+          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"planetarium\"}[1h])) / sum(rate(http_server_requests_seconds_count{job=\"planetarium\"}[1h]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
