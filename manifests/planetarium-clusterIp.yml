@@ -4,7 +4,8 @@ metadata:
   name: "planetarium-clusterip"
   namespace: "default"
   labels:
-    app: "planetarium"
+    app: planetarium
+    job: planetarium-app
 spec:
   ports:
   - name: http
@@ -14,4 +15,3 @@ spec:
   selector:
     app: "planetarium"
   type: "ClusterIP"
-  
