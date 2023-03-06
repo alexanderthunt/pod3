@@ -7,6 +7,7 @@ import com.example.demo.entities.Planet;
 import com.example.demo.exceptions.EntityNotFound;
 import com.example.demo.repository.PlanetDao;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public class PlanetService {
         }   
     }
 
-    public String createPlanet(Planet planet) throws Exception {
+    public String createPlanet(Planet planet) throws SQLException {
         this.planetDao.createPlanet(planet.getPlanetName(), planet.getOwnerId());
         return "Planet created";
     }

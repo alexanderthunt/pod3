@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +18,7 @@ public interface PlanetDao extends JpaRepository<Planet, Integer> {
     @Transactional
     @Modifying
     @Query(value = "insert into planets values (default, :name, :ownerId)", nativeQuery = true)
-    void createPlanet(@Param("name") String name, @Param("ownerId") int ownerId) throws Exception;
+    void createPlanet(@Param("name") String name, @Param("ownerId") int ownerId) throws SQLException;
 
     @Transactional
     @Modifying
