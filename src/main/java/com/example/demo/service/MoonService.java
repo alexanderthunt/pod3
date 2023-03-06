@@ -10,6 +10,8 @@ import com.example.demo.repository.MoonDao;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
+
 @Service
 public class MoonService {
     
@@ -40,7 +42,7 @@ public class MoonService {
         throw new EntityNotFound("No moon found");
     }
 
-    public String createMoon(Moon moon) {
+    public String createMoon(Moon moon) throws PersistenceException {
         this.moonDao.createMoon(moon.getMoonName(), moon.getOwnerId());
         return "Moon created";
     }

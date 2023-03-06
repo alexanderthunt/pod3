@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +19,7 @@ public interface MoonDao extends JpaRepository<Moon, Integer> {
     @Transactional
     @Modifying
     @Query(value = "insert into moons values (default, :name, :ownerId);", nativeQuery = true)
-    void createMoon(@Param("name") String name, @Param("ownerId") int ownerId);
+    void createMoon(@Param("name") String name, @Param("ownerId") int ownerId) throws PersistenceException;
 
     @Transactional
     @Modifying

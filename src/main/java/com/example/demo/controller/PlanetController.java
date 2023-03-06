@@ -62,7 +62,7 @@ public class PlanetController {
         try {
             return new ResponseEntity<>(this.planetService.createPlanet(newPlanet), HttpStatus.CREATED);
         } catch (PersistenceException e) {
-            return new ResponseEntity<>("That planet already exists EXCEPTION:" + e.toString(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
 

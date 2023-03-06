@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,11 @@ public class MoonController {
 
     @PostMapping("/api/moon")
     public ResponseEntity<String> createMoon(@RequestBody Moon newMoon) {
-        return new ResponseEntity<>(this.moonService.createMoon(newMoon), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(this.moonService.createMoon(newMoon), HttpStatus.CREATED);
+        } catch (PersistenceException e) {
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/api/moon/{name}")
