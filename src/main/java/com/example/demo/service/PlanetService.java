@@ -7,9 +7,10 @@ import com.example.demo.entities.Planet;
 import com.example.demo.exceptions.EntityNotFound;
 import com.example.demo.repository.PlanetDao;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.PersistenceException;
 
 @Service
 public class PlanetService {
@@ -42,7 +43,7 @@ public class PlanetService {
         }   
     }
 
-    public String createPlanet(Planet planet) throws SQLException {
+    public String createPlanet(Planet planet) throws PersistenceException {
         this.planetDao.createPlanet(planet.getPlanetName(), planet.getOwnerId());
         return "Planet created";
     }

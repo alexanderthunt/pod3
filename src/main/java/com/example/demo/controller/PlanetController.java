@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
-import java.sql.SQLException;
 import java.util.List;
+
+import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +61,8 @@ public class PlanetController {
     public ResponseEntity<String> createPlanet(@RequestBody Planet newPlanet) {
         try {
             return new ResponseEntity<>(this.planetService.createPlanet(newPlanet), HttpStatus.CREATED);
-        } catch (SQLException e) {
-            return new ResponseEntity<>("SQL exception, planet may already exist", HttpStatus.BAD_REQUEST);
+        } catch (PersistenceException e) {
+            return new ResponseEntity<>("That planet already exists EXCEPTION:" + e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
 
