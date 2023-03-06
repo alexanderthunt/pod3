@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,11 @@ public class PlanetController {
 
     @PostMapping("/api/planet")
     public ResponseEntity<String> createPlanet(@RequestBody Planet newPlanet) {
-        return new ResponseEntity<>(this.planetService.createPlanet(newPlanet), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(this.planetService.createPlanet(newPlanet), HttpStatus.CREATED);
+        } catch (Exception exception) {
+            return new ResponseEntity<>("planet may already exist", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/api/planet/{name}")

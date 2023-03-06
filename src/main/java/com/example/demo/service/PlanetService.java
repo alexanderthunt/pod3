@@ -41,7 +41,7 @@ public class PlanetService {
         }   
     }
 
-    public String createPlanet(Planet planet) {
+    public String createPlanet(Planet planet) throws Exception {
         this.planetDao.createPlanet(planet.getPlanetName(), planet.getOwnerId());
         return "Planet created";
     }

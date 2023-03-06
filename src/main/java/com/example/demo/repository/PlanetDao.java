@@ -17,7 +17,7 @@ public interface PlanetDao extends JpaRepository<Planet, Integer> {
     @Transactional
     @Modifying
     @Query(value = "insert into planets values (default, :name, :ownerId)", nativeQuery = true)
-    void createPlanet(@Param("name") String name, @Param("ownerId") int ownerId);
+    void createPlanet(@Param("name") String name, @Param("ownerId") int ownerId) throws Exception;
 
     @Transactional
     @Modifying
