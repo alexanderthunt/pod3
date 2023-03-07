@@ -10,6 +10,8 @@ import com.example.demo.repository.PlanetDao;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
+
 @Service
 public class PlanetService {
     @Autowired
@@ -41,7 +43,7 @@ public class PlanetService {
         }   
     }
 
-    public String createPlanet(Planet planet) {
+    public String createPlanet(Planet planet) throws PersistenceException {
         this.planetDao.createPlanet(planet.getPlanetName(), planet.getOwnerId());
         return "Planet created";
     }

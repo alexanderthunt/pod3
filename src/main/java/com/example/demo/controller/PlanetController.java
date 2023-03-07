@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
+import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,11 @@ public class PlanetController {
 
     @PostMapping("/api/planet")
     public ResponseEntity<String> createPlanet(@RequestBody Planet newPlanet) {
-        return new ResponseEntity<>(this.planetService.createPlanet(newPlanet), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(this.planetService.createPlanet(newPlanet), HttpStatus.CREATED);
+        } catch (PersistenceException e) {
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/api/planet/{name}")
