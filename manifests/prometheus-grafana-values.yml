@@ -1,26 +1,35 @@
-prometheusOperator:
-  tolerations:
-    - key: "monitoring"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: nodeselector
+              operator: In
+              values:
+                - prometheus
+# prometheusOperator:
+#   tolerations:
+#     - key: "monitoring"
+#       operator: "Equal"
+#       value: "true"
+#       effect: "PreferNoSchedule"
 
-kube-state-metrics:
-  tolerations:
-    - key: "monitoring"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+# kube-state-metrics:
+#   tolerations:
+#     - key: "monitoring"
+#       operator: "Equal"
+#       value: "true"
+#       effect: "PreferNoSchedule"
 
 prometheus:
 # DO NOT ADD TOLERATIONS HERE: WILL OVERRIDE PROMETHEUSSPEC TOLERATIONS CAUSING prometheus-prometheus-kube-prometheus-prometheus-0
 # POD IN PENDING STATUS FOREVER!!!
   prometheusSpec: 
-    tolerations:
-    - key: "monitoring"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+    # tolerations:
+    # - key: "monitoring"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "PreferNoSchedule"
     serviceAccountName: prometheus
     serviceMonitorNamespaceSelector: {}
     serviceMonitorSelector: 
@@ -45,11 +54,11 @@ prometheus:
         prometheus: socks-shop
       
 grafana:
-  tolerations:
-    - key: "monitoring"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+  # tolerations:
+  #   - key: "monitoring"
+  #     operator: "Equal"
+  #     value: "true"
+  #     effect: "PreferNoSchedule"
   # sidecar:
   #   datasources:
   #     tolerations:
@@ -68,24 +77,24 @@ grafana:
     path: /grafana
     ingressClassName: nginx
 
-prometheus-node-exporter:
-  tolerations:
-    - key: "monitoring"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "application"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+# prometheus-node-exporter:
+#   tolerations:
+#     - key: "monitoring"
+#       operator: "Equal"
+#       value: "true"
+#       effect: "PreferNoSchedule"
+#     - key: "application"
+#       operator: "Equal"
+#       value: "true"
+#       effect: "PreferNoSchedule"
 
 alertmanager:
-  alertmanagerSpec:
-    tolerations:
-    - key: "monitoring"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+  # alertmanagerSpec:
+  #   tolerations:
+  #   - key: "monitoring"
+  #     operator: "Equal"
+  #     value: "true"
+  #     effect: "PreferNoSchedule"
 
   config:
     global:

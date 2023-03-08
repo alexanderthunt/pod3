@@ -1,0 +1,29 @@
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: nodeselector
+            operator: In
+            values:
+              - loki-promtail-nginx
+loki:
+  tolerations:
+    - key: "loki-promtail-nginx"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "loki-promtail-nginx"
+      operator: "Equal"
+      value: "true"
+      effect: "NoExecute"
+promtail:
+  tolerations:
+    - key: "loki-promtail-nginx"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "loki-promtail-nginx"
+      operator: "Equal"
+      value: "true"
+      effect: "NoExecute"
