@@ -5,7 +5,8 @@ metadata:
   namespace: "default"
   labels:
     app: planetarium
-    job: planetarium-app
+    job: planetarium
+    release: prometheus
 spec:
   ports:
   - name: http
